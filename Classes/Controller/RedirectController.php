@@ -119,7 +119,7 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         $currentRequest = $this->request;
         $moduleName = $currentRequest->getPluginName();
         $getVars = $this->request->getArguments();
-        $defaultPid = 0;
+        $defaultPid = $this->settings['storagePid'];
 
         $extensionName = $currentRequest->getControllerExtensionName();
         if (count($getVars) === 0) {
