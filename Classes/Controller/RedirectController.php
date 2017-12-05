@@ -1,4 +1,5 @@
 <?php
+
 namespace KoninklijkeCollective\MyRedirects\Controller;
 
 use KoninklijkeCollective\MyRedirects\Backend\BackendSession;
@@ -69,7 +70,7 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 
         if ($request instanceof \TYPO3\CMS\Extbase\Mvc\Web\Request) {
             $arguments = $request->getArguments();
-            if (isset($arguments['forceRedirect']) && (bool) $arguments['forceRedirect'] === true) {
+            if (isset($arguments['forceRedirect']) && (bool)$arguments['forceRedirect'] === true) {
                 unset ($arguments['forceRedirect'], $arguments['controller'], $arguments['action']);
 
                 // Remove empty arguments
@@ -94,12 +95,17 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $view->getModuleTemplate()->getPageRenderer()->loadRequireJsModule('TYPO3/CMS/Backend/Modal');
         }
 
-        $currentUrl = $this->uriBuilder->setAddQueryString(true)->setArgumentsToBeExcludedFromQueryString(['returnUrl'])->buildBackendUri();
+        $currentUrl =
+            $this->uriBuilder->setAddQueryString(true)
+                ->setArgumentsToBeExcludedFromQueryString(['returnUrl'])
+                ->buildBackendUri();
 
-        $this->view->assignMultiple([
-            'moduleUrl' => \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('web_MyRedirectsMyRedirects'),
-            'currentUrl' => $currentUrl
-        ]);
+        $this->view->assignMultiple(
+            [
+                'moduleUrl' => \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('web_MyRedirectsMyRedirects'),
+                'currentUrl' => $currentUrl
+            ]
+        );
     }
 
     /**
@@ -113,6 +119,7 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         $currentRequest = $this->request;
         $moduleName = $currentRequest->getPluginName();
         $getVars = $this->request->getArguments();
+        $defaultPid = 0;
 
         $extensionName = $currentRequest->getControllerExtensionName();
         if (count($getVars) === 0) {
@@ -120,12 +127,25 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $getVars = ['id', 'M', $modulePrefix];
         }
 
+        if (!empty(GeneralUtility::_GET('id'))) {
+            $targetPid = GeneralUtility::_GET('id');
+        } else {
+            $targetPid = $defaultPid;
+        }
+
         $returnUrl = rawurlencode(BackendUtility::getModuleUrl('web_MyRedirectsMyRedirects'));
-        $parameters = GeneralUtility::explodeUrl2Array('edit[tx_myredirects_domain_model_redirect][0]=new&returnUrl=' . $returnUrl);
+        $parameters =
+            GeneralUtility::explodeUrl2Array(
+                'edit[tx_myredirects_domain_model_redirect][' . $targetPid . ']=new&returnUrl=' . $returnUrl
+            );
         $addUserLink = BackendUtility::getModuleUrl('record_edit', $parameters);
 
         $title = $this->translate('controller.action.add.record');
-        $icon = $this->view->getModuleTemplate()->getIconFactory()->getIcon('actions-document-new', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL);
+        $icon =
+            $this->view->getModuleTemplate()->getIconFactory()->getIcon(
+                'actions-document-new',
+                \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL
+            );
         $addUserButton = $buttonBar->makeLinkButton()
             ->setHref($addUserLink)
             ->setTitle($title)
@@ -156,7 +176,7 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         $this->getBackendSession()->createSession(BackendSession::SESSION_KEY);
 
         // Configure page array when page is configured
-        $pageId = (int) GeneralUtility::_GP('id');
+        $pageId = (int)GeneralUtility::_GP('id');
         if ($pageId > 0) {
             $pagePerms = $this->getBackendUserAuthentication()->getPagePermsClause(1);
             $page = BackendUtility::readPageAccess($pageId, $pagePerms);
@@ -208,25 +228,31 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
     public function listAction()
     {
         $arguments = $this->getBackendSession()->getSessionContents(BackendSession::SESSION_KEY);
-        $filter = (array) $arguments['filter'];
+        $filter = (array)$arguments['filter'];
         $noPageUri = null;
         if (!empty($this->page)) {
             $filter['page'] = $this->page['uid'];
-            $noPageUri = $this->uriBuilder->reset()->setAddQueryString(true)->setArgumentsToBeExcludedFromQueryString(['id'])->build();
+            $noPageUri =
+                $this->uriBuilder->reset()
+                    ->setAddQueryString(true)
+                    ->setArgumentsToBeExcludedFromQueryString(['id'])
+                    ->build();
         }
 
-        $this->view->assignMultiple([
-            'noPageUri' => $noPageUri,
-            'page' => $this->page,
-            'filter' => (array) $arguments['filter'],
-            'order' => $arguments['order'],
-            'direction' => $arguments['direction'],
-            'redirects' => $this->getRedirectRepository()->findByOrder(
-                $filter,
-                $arguments['order'],
-                $arguments['direction']
-            ),
-        ]);
+        $this->view->assignMultiple(
+            [
+                'noPageUri' => $noPageUri,
+                'page' => $this->page,
+                'filter' => (array)$arguments['filter'],
+                'order' => $arguments['order'],
+                'direction' => $arguments['direction'],
+                'redirects' => $this->getRedirectRepository()->findByOrder(
+                    $filter,
+                    $arguments['order'],
+                    $arguments['direction']
+                ),
+            ]
+        );
     }
 
     /**
@@ -243,8 +269,10 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             $this->getRedirectRepository()->update($redirect);
 
             $this->enqueueFlashMessage(
-                $this->translate('controller.action.success.lookup.description',
-                    ['/' . $redirect->getUrl()]),
+                $this->translate(
+                    'controller.action.success.lookup.description',
+                    ['/' . $redirect->getUrl()]
+                ),
                 $this->translate('controller.action.success.lookup.title'),
                 \TYPO3\CMS\Core\Messaging\AbstractMessage::INFO
             );
@@ -288,13 +316,26 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
      * @param bool $storeInSession
      * @throws \TYPO3\CMS\Core\Exception
      */
-    public function enqueueFlashMessage($messageBody, $messageTitle = '', $severity = \TYPO3\CMS\Core\Messaging\AbstractMessage::OK, $storeInSession = true)
-    {
+    public function enqueueFlashMessage(
+        $messageBody,
+        $messageTitle = '',
+        $severity = \TYPO3\CMS\Core\Messaging\AbstractMessage::OK,
+        $storeInSession = true
+    ) {
         if (!is_string($messageBody)) {
-            throw new \InvalidArgumentException('The message body must be of type string, "' . gettype($messageBody) . '" given.', 1243258395);
+            throw new \InvalidArgumentException(
+                'The message body must be of type string, "' . gettype($messageBody) . '" given.', 1243258395
+            );
         }
         /* @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
-        $flashMessage = $this->getObjectManager()->get(\TYPO3\CMS\Core\Messaging\FlashMessage::class, $messageBody, $messageTitle, $severity, $storeInSession);
+        $flashMessage =
+            $this->getObjectManager()->get(
+                \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                $messageBody,
+                $messageTitle,
+                $severity,
+                $storeInSession
+            );
         $this->getFlashMessageQueue()->enqueue($flashMessage);
     }
 
@@ -328,7 +369,10 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
     protected function getRedirectRepository()
     {
         if ($this->redirectRepository === null) {
-            $this->redirectRepository = $this->getObjectManager()->get(\KoninklijkeCollective\MyRedirects\Domain\Repository\RedirectRepository::class);
+            $this->redirectRepository =
+                $this->getObjectManager()->get(
+                    \KoninklijkeCollective\MyRedirects\Domain\Repository\RedirectRepository::class
+                );
         }
         return $this->redirectRepository;
     }
@@ -339,7 +383,8 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
     protected function getRedirectService()
     {
         if ($this->redirectService === null) {
-            $this->redirectService = $this->getObjectManager()->get(\KoninklijkeCollective\MyRedirects\Service\RedirectService::class);
+            $this->redirectService =
+                $this->getObjectManager()->get(\KoninklijkeCollective\MyRedirects\Service\RedirectService::class);
         }
         return $this->redirectService;
     }

@@ -25,4 +25,8 @@ if (TYPO3_MODE === 'BE') {
         \KoninklijkeCollective\MyRedirects\Domain\Model\Redirect::TABLE,
         'EXT:my_redirects/Resources/Private/Language/locallang_csh.xlf'
     );
+
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages(
+        \KoninklijkeCollective\MyRedirects\Domain\Model\Redirect::TABLE
+    );
 }

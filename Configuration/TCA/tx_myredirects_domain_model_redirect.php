@@ -18,7 +18,6 @@ return [
         'editlock' => 'editlock',
         'dividers2tabs' => true,
         'iconfile' => 'EXT:my_redirects/Resources/Public/Icons/' . Redirect::TABLE . '.png',
-        'rootLevel' => true,
         'canNotCollapse' => true,
         'hideTable' => true, // don't show in listing..
         'security' => [
