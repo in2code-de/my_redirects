@@ -231,7 +231,6 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
         $filter = (array)$arguments['filter'];
         $noPageUri = null;
         if (!empty($this->page)) {
-            $filter['page'] = $this->page['uid'];
             $noPageUri =
                 $this->uriBuilder->reset()
                     ->setAddQueryString(true)

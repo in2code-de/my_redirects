@@ -61,7 +61,7 @@ class RedirectRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
             foreach ($filter as $key => $value) {
                 switch ($key) {
                     case 'page':
-                        $constraints[] = $query->equals('destination', (int) $value);
+                        $constraints[] = $query->equals('pid', (int) $value);
                         break;
 
                     case 'sword':
