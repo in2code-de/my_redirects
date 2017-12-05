@@ -16,25 +16,6 @@
         <f:translate key="redirect.filter"/>
     </h2>
 
-    <f:if condition="{page}">
-        <div class="typo3-messages my-redirects-messages">
-            <div class="typo3-message alert alert-warning">
-                <div class="message-title">
-                    <strong>
-                        <f:translate key="redirect.filter.ignore_page.title"/>
-                    </strong>
-                    <f:link.page addQueryString="1" argumentsToBeExcludedFromQueryString="{0: 'id'}">
-                        <small><f:translate key="deactivate"/></small>
-                    </f:link.page>
-                </div>
-                <div class="message-body">
-                    <f:format.raw><f:translate key="redirect.filter.ignore_page.description" arguments="{0: page.uid, 1: page.title, 2: '<a href=\'{noPageUri}\'>here</a>'}"/></f:format.raw>
-                </div>
-            </div>
-        </div>
-        <br/>
-    </f:if>
-
     <div class="filter">
         <f:form class="form-inline form-inline-spaced" name="filter" object="{filter}">
             <f:form.hidden name="forceRedirect" value="1"/>
