@@ -9,3 +9,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 if ('FE' === TYPO3_MODE) {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/index_ts.php']['preprocessRequest'][$_EXTKEY] = 'KoninklijkeCollective\\MyRedirects\\Controller\\RequestController->redirectAction';
 }
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScript(
+    'my_redirects',
+    'setup',
+    '<INCLUDE_TYPOSCRIPT: source="FILE: EXT:my_redirects/Configuration/TypoScript/setup.txt">'
+);

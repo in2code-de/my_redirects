@@ -13,13 +13,8 @@ module.tx_myredirects {
         }
     }
 
-    persistence {
-        storagePid = 0
-    }
-
     settings {
-        # Don't touch this (this is just to let the extension know, that there is TypoScript included)
-        staticTemplate = 1
+        storagePid = 0
 
         dateFormat = H:i d-m-Y
     }
