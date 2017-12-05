@@ -185,7 +185,7 @@ class RedirectController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
             }
         }
 
-        if (!isset($this->settings['staticTemplate'])) {
+        if (!isset($this->settings) && $this->settings !== null) {
             $this->controllerContext = $this->buildControllerContext();
             $this->enqueueFlashMessage(
                 $this->translate('controller.initialize.error.no_typoscript.description'),
